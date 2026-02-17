@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Single-File HTML Page</title>
+  <meta name="description" content="A modern single-file HTML template with sidebar nav, search, and dark mode." />
+  <style>
+    :root{
+      --bg: #0b0c10;
+      --panel: #111319;
+      --panel2:#0f1117;
+      --text:#e9ecf1;
+      --muted:#a7afbf;
+      --line:#23283a;
+      --brand:#7c5cff;
+      --brand2:#22c55e;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --max: 1100px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+    }
+    [data-theme="light"]{
+      --bg:#f6f7fb;
+      --panel:#ffffff;
+      --panel2:#f2f4fb;
+      --text:#0b1220;
+      --muted:#54627a;
+      --line:#e6e9f2;
+      --shadow: 0 10px 30px rgba(16,24,40,.10);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      background: radial-gradient(1200px 700px at 10% 0%, rgba(124,92,255,.18), transparent 60%),
+                  radial-gradient(900px 500px at 90% 10%, rgba(34,197,94,.14), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+    a{color:inherit;text-decoration:none}
+    .wrap{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 18px;
+    }
+    header{
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+      background: color-mix(in srgb, var(--bg) 70%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    .header-inner{
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    .logo{
+      width:34px;height:34px;border-radius:12px;
+      background: linear-gradient(135deg, var(--brand), color-mix(in srgb, var(--brand2) 65%, var(--brand) 35%));
+      box-shadow: var(--shadow);
+      border: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+    }
+    .top-actions{
+      display:flex; gap:10px; align-items:center;
+    }
+    .btn{
+      border:1px solid var(--line);
+      background: color-mix(in srgb, var(--panel) 70%, transparent);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 9px 12px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-weight:600;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    .btn:hover{ background: color-mix(in srgb, var(--panel) 85%, transparent); }
+    .btn:active{ transform: translateY(1px); }
+    .kbd{
+      font-family: var(--mono);
+      font-size: 12px;
+      opacity:.8;
+      padding: 2px 6px;
+      border:1px solid var(--line);
+      border-bottom-width: 2px;
+      border-radius: 8px;
+      background: var(--panel2);
+    }
+
+    /* Sidebar */
+    aside{
+      position: sticky;
+      top: 76px;
+      align-self: start;
+      background: color-mix(in srgb, var(--panel) 85%, transparent);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .side-top{
+      padding: 14px 14px 10px 14px;
+      border-bottom:1px solid var(--line);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--panel) 80%, transparent), transparent);
+    }
+    .search{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      background: var(--panel2);
+      border:1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+    .search input{
+      width:100%;
+      border:0;
+      outline:0;
+      background: transparent;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .search .hint{
+      font-size:12px;
+      color: var(--muted);
+      font-family: var(--mono);
+      white-space: nowrap;
+    }
+    nav{ padding: 10px; }
+    .nav-item{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding: 10px 10px;
+      border-radius: 14px;
+      color: var(--muted);
+      cursor:pointer;
+      border: 1px solid transparent;
+      transition: background .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .nav-item:hover{
+      background: color-mix(in srgb, var(--panel2) 70%, transparent);
+      color: var(--text);
+    }
+    .nav-item.active{
+      color: var(--text);
+      background: color-mix(in srgb, var(--brand) 16%, var(--panel2));
+      border-color: color-mix(in srgb, var(--brand) 35%, var(--line));
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: color-mix(in srgb, var(--brand) 75%, var(--brand2));
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand) 18%, transparent);
+      flex:0 0 auto;
+    }
+
+    /* Main */
+    main{
+      background: color-mix(in srgb, var(--panel) 78%, transparent);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .hero{
+      padding: 18px 18px 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(120deg, color-mix(in srgb, var(--brand) 22%, transparent), transparent 60%),
+        linear-gradient(180deg, color-mix(in srgb, var(--panel) 82%, transparent), transparent);
+    }
+    .hero h1{
+      margin: 0 0 6px 0;
+      font-size: clamp(20px, 3vw, 28px);
+      line-height: 1.15;
+    }
+    .hero p{ margin: 0; color: var(--muted); max-width: 70ch; }
+
+    .content{ padding: 18px; display:flex; flex-direction:column; gap:16px; }
+    section{
+      border:1px solid var(--line);
+      background: var(--panel2);
+      border-radius: var(--radius);
+      padding: 16px;
+      scroll-margin-top: 96px;
+    }
+    section h2{ margin: 0 0 6px 0; font-size: 18px; }
+    section p{ margin: 0; color: var(--muted); }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .card{
+      grid-column: span 6;
+      border:1px solid var(--line);
+      background: color-mix(in srgb, var(--panel) 80%, transparent);
+      border-radius: 16px;
+      padding: 14px;
+    }
+    .card h3{ margin:0 0 6px 0; font-size: 15px;}
+    .card p{ margin:0; color: var(--muted); font-size: 14px;}
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--panel2) 70%, transparent);
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    /* Footer */
+    footer{
+      padding: 14px 18px;
+      border-top:1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+      display:flex;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .mono{ font-family: var(--mono); }
+
+    /* Responsive */
+    @media (max-width: 900px){
+      .wrap{ grid-template-columns: 1fr; }
+      aside{ position: relative; top: 0; }
+      .card{ grid-column: span 12; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand" aria-label="Site brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div style="font-size:14px;opacity:.9;">Single-File Template</div>
+          <div style="font-size:12px;color:var(--muted);">Search • Sidebar • Dark mode</div>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn" id="btnTheme" type="button" aria-label="Toggle theme">
+          <span aria-hidden="true">🌙</span>
+          <span>Theme</span>
+        </button>
+        <button class="btn" id="btnTop" type="button" aria-label="Scroll to top">
+          <span aria-hidden="true">↑</span>
+          <span>Top</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <aside>
+      <div class="side-top">
+        <div class="search" role="search">
+          <span aria-hidden="true">🔎</span>
+          <input id="search" type="text" placeholder="Filter sections…" autocomplete="off" />
+          <span class="hint"><span class="kbd">/</span></span>
+        </div>
+      </div>
+      <nav id="nav" aria-label="Section navigation">
+        <a class="nav-item active" href="#overview"><span class="dot"></span>Overview</a>
+        <a class="nav-item" href="#features"><span class="dot"></span>Features</a>
+        <a class="nav-item" href="#examples"><span class="dot"></span>Examples</a>
+        <a class="nav-item" href="#faq"><span class="dot"></span>FAQ</a>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="hero">
+        <h1>Modern single-file HTML page</h1>
+        <p>
+          This template is fully self-contained: HTML + CSS + JS in one file.
+          It includes a sticky header, smooth scrolling, section highlighting, and a fast client-side search.
+        </p>
+      </div>
+
+      <div class="content" id="content">
+        <section id="overview" data-title="Overview">
+          <h2>Overview</h2>
+          <p>
+            Replace the sections below with your content. You can add as many sections as you want — the sidebar and search
+            will update automatically if you keep the <span class="mono">data-title</span> attribute.
+          </p>
+          <div class="grid">
+            <div class="card">
+              <h3>Single file</h3>
+              <p>No frameworks, no bundlers. Just open in the browser.</p>
+              <div class="tag">✅ easy to share</div>
+            </div>
+            <div class="card">
+              <h3>Responsive</h3>
+              <p>Sidebar collapses naturally on small screens.</p>
+              <div class="tag">📱 mobile-friendly</div>
+            </div>
+          </div>
+        </section>
+
+        <section id="features" data-title="Features">
+          <h2>Features</h2>
+          <p>
+            Dark mode persists in <span class="mono">localStorage</span>. Navigation highlights the visible section.
+            Press <span class="kbd">/</span> to focus search.
+          </p>
+          <div class="grid">
+            <div class="card">
+              <h3>Sticky header</h3>
+              <p>Always available actions: theme toggle and back to top.</p>
+            </div>
+            <div class="card">
+              <h3>Section search</h3>
+              <p>Filter sidebar items by typing. Great for long docs.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="examples" data-title="Examples">
+          <h2>Examples</h2>
+          <p>
+            Use this section for code snippets, screenshots, or simple demos. Below is a tiny “copy to clipboard” example.
+          </p>
+
+          <div class="grid">
+            <div class="card" style="grid-column: span 12;">
+              <h3>Copy snippet</h3>
+              <p class="mono" id="snippet" style="margin-top:8px; padding:12px; border-radius:14px; border:1px solid var(--line); background:var(--panel); overflow:auto;">
+curl -s https://example.com | head -n 5
+              </p>
+              <div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn" id="btnCopy" type="button">📋 Copy</button>
+                <span id="copyStatus" style="color:var(--muted); font-size:13px;"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="faq" data-title="FAQ">
+          <h2>FAQ</h2>
+          <p><strong>How do I add a new section?</strong> Add a new <span class="mono">&lt;section id="..." data-title="..."&gt;</span>. The script auto-builds the nav.</p>
+          <p style="margin-top:10px;"><strong>How do I change colors?</strong> Edit CSS variables in <span class="mono">:root</span> and <span class="mono">[data-theme="light"]</span>.</p>
+        </section>
+      </div>
+
+      <footer>
+        <div>© <span id="year"></span> • Miras Kamatay</div>
+        <div class="mono">Built as a single HTML file</div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // ===== Helpers =====
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+    // ===== Theme =====
+    const THEME_KEY = "sf_theme";
+    const rootEl = document.documentElement;
+
+    function setTheme(theme){
+      if(theme === "light") rootEl.setAttribute("data-theme","light");
+      else rootEl.removeAttribute("data-theme");
+      localStorage.setItem(THEME_KEY, theme);
+      $("#btnTheme span[aria-hidden='true']").textContent = (theme === "light") ? "☀️" : "🌙";
+    }
+
+    const savedTheme = localStorage.getItem(THEME_KEY);
+    if(savedTheme) setTheme(savedTheme);
+    else {
+      const prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+      setTheme(prefersLight ? "light" : "dark");
+    }
+
+    $("#btnTheme").addEventListener("click", () => {
+      const isLight = rootEl.getAttribute("data-theme") === "light";
+      setTheme(isLight ? "dark" : "light");
+    });
+
+    // ===== Scroll to top =====
+    $("#btnTop").addEventListener("click", () => window.scrollTo({top: 0, behavior: "smooth"}));
+
+    // ===== Build nav from sections (auto) =====
+    const nav = $("#nav");
+    const sections = $$("main section[id][data-title]");
+    nav.innerHTML = sections.map((s, i) => `
+      <a class="nav-item ${i===0 ? "active":""}" href="#${s.id}">
+        <span class="dot"></span>${s.dataset.title}
+      </a>
+    `).join("");
+
+    // ===== Search filter for nav =====
+    const search = $("#search");
+    function applyFilter(){
+      const q = search.value.trim().toLowerCase();
+      const items = $$(".nav-item", nav);
+      items.forEach(a => {
+        const txt = a.textContent.trim().toLowerCase();
+        a.style.display = (q === "" || txt.includes(q)) ? "flex" : "none";
+      });
+    }
+    search.addEventListener("input", applyFilter);
+
+    // Focus search with "/" like many apps
+    window.addEventListener("keydown", (e) => {
+      if(e.key === "/" && document.activeElement !== search){
+        e.preventDefault();
+        search.focus();
+      }
+      if(e.key === "Escape" && document.activeElement === search){
+        search.value = "";
+        applyFilter();
+        search.blur();
+      }
+    });
+
+    // ===== Active section highlighting (IntersectionObserver) =====
+    const itemsById = new Map($$(".nav-item", nav).map(a => [a.getAttribute("href").slice(1), a]));
+
+    const obs = new IntersectionObserver((entries) => {
+      // Pick the most visible intersecting section
+      const visible = entries
+        .filter(e => e.isIntersecting)
+        .sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if(!visible) return;
+
+      const id = visible.target.id;
+      $$(".nav-item", nav).forEach(a => a.classList.remove("active"));
+      const active = itemsById.get(id);
+      if(active) active.classList.add("active");
+    }, { root: null, threshold: [0.2, 0.35, 0.5, 0.7] });
+
+    sections.forEach(s => obs.observe(s));
+
+    // ===== Footer year =====
+    $("#year").textContent = new Date().getFullYear();
+
+    // ===== Copy example =====
+    $("#btnCopy").addEventListener("click", async () => {
+      const text = $("#snippet").textContent.trim();
+      try{
+        await navigator.clipboard.writeText(text);
+        $("#copyStatus").textContent = "Copied!";
+        setTimeout(() => $("#copyStatus").textContent = "", 1200);
+      }catch{
+        $("#copyStatus").textContent = "Copy failed (browser blocked clipboard).";
+        setTimeout(() => $("#copyStatus").textContent = "", 1800);
+      }
+    });
+  </script>
+</body>
+</html>
